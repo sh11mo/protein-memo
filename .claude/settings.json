@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(gh repo *)",
+      "Bash(gh api *)",
+      "Bash(find /tmp -name \"*orange*\" -type d 2>/dev/null | head -5)",
+      "Read(//private/tmp/**)",
+      "Bash(ls -la /Users/devalon/src/orange/)",
+      "Read(//Users/devalon/src/orange/**)"
+    ]
+  }
+}
