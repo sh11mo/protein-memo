@@ -10,7 +10,8 @@
       "Bash(find /tmp -name \"*orange*\" -type d 2>/dev/null | head -5)",
       "Read(//private/tmp/**)",
       "Bash(ls -la /Users/devalon/src/orange/)",
-      "Read(//Users/devalon/src/orange/**)"
+      "Read(//Users/devalon/src/orange/**)",
+      "Bash(git check-ignore *)"
     ]
   }
 }

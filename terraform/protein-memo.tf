@@ -14,6 +14,7 @@ resource "google_cloud_run_service" "protein_memo" {
         "run.googleapis.com/cloudsql-instances"   = data.google_sql_database_instance.main.connection_name
         "run.googleapis.com/vpc-access-connector" = data.google_vpc_access_connector.connector.id
         "run.googleapis.com/vpc-access-egress"    = "private-ranges-only"
+        "deploy-timestamp"                        = timestamp()
       }
     }
 
