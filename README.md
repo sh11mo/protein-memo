@@ -42,17 +42,19 @@ MYSQL_HOST=127.0.0.1
 ```bash
 IMAGE=asia-northeast1-docker.pkg.dev/orange-prod01/apps/protein-memo:latest
 
-docker build -t $IMAGE .
+docker build --platform linux/amd64 -t $IMAGE .
 docker push $IMAGE
 ```
 
+> Apple Silicon (M1/M2/M3) Mac でビルドする場合、`--platform linux/amd64` が必須。指定しないと Cloud Run で `exec format error` になる。
+>
 > 初回は `gcloud auth configure-docker asia-northeast1-docker.pkg.dev` が必要。
 
 ### 2. Terraform で Cloud Run をデプロイ
 
 ```bash
 cd terraform
-terraform apply
+terraform apply -var-file=terraform.tfvars
 ```
 
 `protein_memo_image` は `terraform.tfvars` で固定されているため、イメージを差し替えた場合は `terraform.tfvars` を更新するか、コマンドラインで上書きする：
@@ -69,11 +71,11 @@ Cloud Run の URL を LINE Developers の Webhook URL に設定し、Bot にメ�
 
 ## 使い方
 
-| メッセージ | 動作 |
-|---|---|
-| `25` / `25g` / `+25g` | プロテインを記録 |
-| `-10g` | 記録を取り消し |
-| `今日は？` | 今日の合計を表示 |
-| `昨日は？` | 昨日の合計を表示 |
-| `今週` / `一週間` | 過去7日間の一覧を表示 |
-| `目標 100g` | 1日の目標を設定 |
+| メッセージ            | 動作                  |
+| --------------------- | --------------------- |
+| `25` / `25g` / `+25g` | プロテインを記録      |
+| `-10g`                | 記録を取り消し        |
+| `今日は？`            | 今日の合計を表示      |
+| `昨日は？`            | 昨日の合計を表示      |
+| `今週` / `一週間`     | 過去7日間の一覧を表示 |
+| `目標 100g`           | 1日の目標を設定       |
