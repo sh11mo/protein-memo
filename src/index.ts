@@ -15,6 +15,7 @@ import {
   addProtein,
   getGoal,
   getTotal,
+  getWeekHistory,
   setGoal,
 } from "./db/repository.js";
 
@@ -62,10 +63,23 @@ app.post("/webhook", {
             break;
           }
           case "query": {
-            const offsetDays = parsed.target === "yesterday" ? -1 : 0;
-            const label = parsed.target === "yesterday" ? "昨日" : "今日";
-            const total = await getTotal(userId, offsetDays);
-            replyText = `${label}の合計は ${total}g でした。`;
+            if (parsed.target === "week") {
+              const goal = await getGoal(userId);
+              const history = await getWeekHistory(userId);
+              const lines = history.map((r) => {
+                const achieved = r.total_grams >= goal ? " ✓" : "";
+                return `${r.date}: ${r.total_grams}g${achieved}`;
+              });
+              replyText =
+                lines.length > 0
+                  ? `過去7日間の記録:\n${lines.join("\n")}`
+                  : "過去7日間の記録がありません。";
+            } else {
+              const offsetDays = parsed.target === "yesterday" ? -1 : 0;
+              const label = parsed.target === "yesterday" ? "昨日" : "今日";
+              const total = await getTotal(userId, offsetDays);
+              replyText = `${label}の合計は ${total}g でした。`;
+            }
             break;
           }
           case "set_goal": {
@@ -80,6 +94,7 @@ app.post("/webhook", {
               "・ -10g → 記録を取り消し\n" +
               "・ 今日は？ → 今日の合計\n" +
               "・ 昨日は？ → 昨日の合計\n" +
+              "・ 今週 / 一週間 → 過去7日間の一覧\n" +
               "・ 目標 100g → 1日の目標を設定";
             break;
         }

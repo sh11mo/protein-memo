@@ -56,3 +56,19 @@ export async function getTotal(
   );
   return rows[0]?.total_grams ?? 0;
 }
+
+export async function getWeekHistory(
+  userId: string
+): Promise<{ date: string; total_grams: number }[]> {
+  const pool = getPool();
+  const today = jstDateString(0);
+  const weekAgo = jstDateString(-6);
+  const [rows] = await pool.execute<any[]>(
+    `SELECT log_date AS date, total_grams
+     FROM protein_log
+     WHERE line_user_id = ? AND log_date BETWEEN ? AND ?
+     ORDER BY log_date ASC`,
+    [userId, weekAgo, today]
+  );
+  return rows;
+}

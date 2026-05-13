@@ -1,6 +1,6 @@
 export type ParsedMessage =
   | { type: "add"; grams: number }
-  | { type: "query"; target: "today" | "yesterday" }
+  | { type: "query"; target: "today" | "yesterday" | "week" }
   | { type: "set_goal"; grams: number }
   | { type: "unknown" };
 
@@ -11,6 +11,11 @@ export function parseMessage(text: string): ParsedMessage {
   const goalMatch = normalized.match(/^目標[をは]?\s*[：:]?\s*([+-]?\d+)\s*g?/);
   if (goalMatch) {
     return { type: "set_goal", grams: parseInt(goalMatch[1], 10) };
+  }
+
+  // クエリ: 今週 / 一週間
+  if (/今週|一週間|週間/.test(normalized)) {
+    return { type: "query", target: "week" };
   }
 
   // クエリ: 今日
