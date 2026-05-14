@@ -66,9 +66,12 @@ app.post("/webhook", {
             if (parsed.target === "week") {
               const goal = await getGoal(userId);
               const history = await getWeekHistory(userId);
+              const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
               const lines = history.map((r) => {
+                const [y, m, d] = (r.date as string).split("-").map(Number);
+                const dow = weekdays[new Date(y, m - 1, d).getDay()];
                 const achieved = r.total_grams >= goal ? " ✓" : "";
-                return `${r.date}: ${r.total_grams}g${achieved}`;
+                return `${m}/${d}(${dow}): ${r.total_grams}g${achieved}`;
               });
               replyText =
                 lines.length > 0

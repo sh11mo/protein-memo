@@ -64,7 +64,7 @@ export async function getWeekHistory(
   const today = jstDateString(0);
   const weekAgo = jstDateString(-6);
   const [rows] = await pool.execute<any[]>(
-    `SELECT log_date AS date, total_grams
+    `SELECT DATE_FORMAT(log_date, '%Y-%m-%d') AS date, total_grams
      FROM protein_log
      WHERE line_user_id = ? AND log_date BETWEEN ? AND ?
      ORDER BY log_date ASC`,
