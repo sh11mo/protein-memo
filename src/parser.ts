@@ -1,5 +1,5 @@
 export type ParsedMessage =
-  | { type: "add"; grams: number }
+  | { type: "add"; grams: number; offsetDays: number }
   | { type: "query"; target: "today" | "yesterday" | "week" }
   | { type: "set_goal"; grams: number }
   | { type: "unknown" };
@@ -18,6 +18,12 @@ export function parseMessage(text: string): ParsedMessage {
     return { type: "query", target: "week" };
   }
 
+  // 昨日の記録変更: 「昨日+10」「昨日-10」「昨日10g」
+  const yesterdayAddMatch = normalized.match(/^昨日\s*([+-]?\d+)\s*g?$/);
+  if (yesterdayAddMatch) {
+    return { type: "add", grams: parseInt(yesterdayAddMatch[1], 10), offsetDays: -1 };
+  }
+
   // クエリ: 今日
   if (/今日/.test(normalized)) {
     return { type: "query", target: "today" };
@@ -31,7 +37,7 @@ export function parseMessage(text: string): ParsedMessage {
   // 数値入力: 「25」「25g」「+15」「+15g」「-10」「-10g」「あと 25」「あと 25g」
   const numMatch = normalized.match(/^(?:あと\s*)?([+-]?\d+)\s*g?$/);
   if (numMatch) {
-    return { type: "add", grams: parseInt(numMatch[1], 10) };
+    return { type: "add", grams: parseInt(numMatch[1], 10), offsetDays: 0 };
   }
 
   return { type: "unknown" };

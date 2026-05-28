@@ -27,10 +27,11 @@ export async function setGoal(userId: string, grams: number): Promise<void> {
 
 export async function addProtein(
   userId: string,
-  grams: number
+  grams: number,
+  offsetDays = 0
 ): Promise<number> {
   const pool = getPool();
-  const date = jstDateString();
+  const date = jstDateString(offsetDays);
   await pool.execute(
     `INSERT INTO protein_log (line_user_id, log_date, total_grams)
      VALUES (?, ?, GREATEST(0, ?))

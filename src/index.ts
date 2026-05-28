@@ -51,12 +51,13 @@ app.post("/webhook", {
 
         switch (parsed.type) {
           case "add": {
-            const total = await addProtein(userId, parsed.grams);
+            const total = await addProtein(userId, parsed.grams, parsed.offsetDays);
             const goal = await getGoal(userId);
             const sign = parsed.grams >= 0 ? "+" : "";
+            const label = parsed.offsetDays < 0 ? "昨日" : "今日";
             const remaining = goal - total;
             replyText =
-              `${sign}${parsed.grams}g 記録しました。\n今日の合計は ${total}g です。\n` +
+              `${sign}${parsed.grams}g 記録しました。\n${label}の合計は ${total}g です。\n` +
               (remaining > 0
                 ? `目標まであと ${remaining}g です。`
                 : `目標の ${goal}g を達成しました！`);
@@ -95,6 +96,7 @@ app.post("/webhook", {
               "使い方：\n" +
               "・ 25 / 25g / +25g → プロテインを記録\n" +
               "・ -10g → 記録を取り消し\n" +
+              "・ 昨日+10 / 昨日-10 → 昨日の記録を変更\n" +
               "・ 今日は？ → 今日の合計\n" +
               "・ 昨日は？ → 昨日の合計\n" +
               "・ 今週 / 一週間 → 過去7日間の一覧\n" +
