@@ -21,7 +21,12 @@ data "google_service_account" "cloud_run_sa" {
   account_id = "cloud-run-sa"
 }
 
-data "google_vpc_access_connector" "connector" {
-  name = "cloudrun-connector"
+data "google_compute_network" "vpc" {
+  name = "cloudrun-vpc"
+}
+
+data "google_compute_subnetwork" "subnet" {
+  name   = "cloudrun-subnet"
+  region = "asia-northeast1"
 }
 
