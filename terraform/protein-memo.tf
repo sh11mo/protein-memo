@@ -36,6 +36,7 @@ resource "google_cloud_run_v2_service" "protein_memo" {
         limits = {
           memory = "512Mi"
         }
+        cpu_idle = true
       }
 
       volume_mounts {
